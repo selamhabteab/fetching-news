@@ -1,17 +1,35 @@
+//external imports:
 import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
+import { render } from 'react-dom';
+import { createStore, applyMiddleware } from 'redux';
+  //to create the store that will maintain the Redux state
+  //to be able to use middleware, in this case thunk
+import thunk from 'redux-thunk';
+  //a middleware that allows us to make asynchronous actions in redux
+import { Provider } from 'react-redux';
+  //to wrap the entire application in redux
+import { composeWithDevTools } from 'redux-devtools-extension';
+  //code that connects your app to redux DevTools
+import logger from 'redux-logger';
+
+//local imports:
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import rootReducer from './reducers/index';
 
-ReactDOM.render(
-  <React.StrictMode>
+//assets:
+import './index.css';
+
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(thunk, logger))
+)
+
+render(
+  //When used with React, a <Provider> exists to wrap the application, and anything within the Provider can have access to Redux.
+  <Provider store = { store }>
     <App />
-  </React.StrictMode>,
+  </Provider>,
   document.getElementById('root')
-);
+)
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+
